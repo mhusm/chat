@@ -26,6 +26,10 @@ io.on("connection", socket => {
         console.log(message);
         socket.broadcast.emit("chat", message);
     });
+
+    socket.on("disconnect", reason => {
+        io.emit("users", getAllUsers())
+    });
 });
 
 let getAllUsers = function getAllUsers() {

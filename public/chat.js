@@ -43,6 +43,12 @@ let displayMessage = function displayMessage(message, user) {
     newNode.innerHTML = `${user}: ${message}`;
     document.querySelector("#chat-window").appendChild(newNode);
 };
+
+let displayUsers = function displayMessage(users) {
+    let userliitems = users.map(user => `<li>${user}</li>`);
+    document.querySelector("#users").innerHTML = userliitems.join("");
+};
+
 let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
 
     let options = {
@@ -58,6 +64,9 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
         console.log(error)
     }
 };
+
+//TODO click here to enable notifications, visualise permission status
+
 
 
 (function(){
@@ -93,7 +102,8 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
 
     socket.on("users", users => {
         //TODO display all users
-       console.log(users.filter(user => user !== nickname));
+        let  other_users = users.filter(user => user !== nickname);
+        displayUsers(other_users);
     });
 
     document.querySelector("#chat-input").addEventListener("keypress", event => {
