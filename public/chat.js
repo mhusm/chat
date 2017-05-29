@@ -5,6 +5,8 @@
 
 let socket = io();
 let nickname = "No name set";
+let channel =  document.querySelector("li.selected").textContent;
+let channelContent = [];
 
 let enableNotifications = function enableNotifications () {
 // Let's check if the browser supports notifications
@@ -34,20 +36,46 @@ let enableNotifications = function enableNotifications () {
 };
 
 
-let sendMessage = function sendMessage(message) {
-    socket.emit("chat", {from: nickname, message: message});
+let sendMessage = function sendMessage(message, to) {
+    socket.emit("chat", {from: nickname, message: message, to: to});
 };
 
-let displayMessage = function displayMessage(message, user) {
+let displayMessage = function displayMessage(message, user, channel) {
     let newNode = document.createElement('div');
-    newNode.innerHTML = `${user}: ${message}`;
+    newNode.innerHTML = `${user} to ${channel}: ${message}`;
     document.querySelector("#chat-window").appendChild(newNode);
 };
 
 let displayUsers = function displayMessage(users) {
     let userliitems = users.map(user => `<li>${user}</li>`);
     document.querySelector("#users").innerHTML = userliitems.join("");
+    let userelements = Array.from(document.querySelector("#users").children);
+    markChannel(channel);
+    for (let i in userelements) {
+        userelements[i].addEventListener("click", event => {
+            changeChannel(event.target.textContent);
+        });
+    }
+
 };
+
+let markChannel = function selectChannel(channel) {
+    // remove selection from old channel
+    let current =  document.querySelector("li.selected");
+    if (current) {
+        document.querySelector("li.selected").classList.remove("selected");
+    }
+
+    // find channel element, if it exists
+    let items = Array.from(document.querySelectorAll("li"));
+    let selected = items.filter(item => item.textContent === channel);
+    if (selected.length > 0) {
+        selected[0].classList.add("selected");
+    } else {
+        changeChannel(items[0].textContent);
+    }
+};
+
 
 let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
 
@@ -65,6 +93,14 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
     }
 };
 
+
+let changeChannel = function changeChannel(newChannel) {
+    if (newChannel !== channel) {
+        channel = newChannel;
+        markChannel(channel);
+    }
+
+};
 //TODO click here to enable notifications, visualise permission status
 
 
@@ -91,7 +127,7 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
             console.log("not hidden");
             console.log(data.message);
         }
-        displayMessage(data.message, data.from);
+        displayMessage(data.message, data.from, data.to);
     });
 
     socket.on("nickname", name => {
@@ -101,17 +137,23 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
     });
 
     socket.on("users", users => {
-        //TODO display all users
         let  other_users = users.filter(user => user !== nickname);
         displayUsers(other_users);
     });
 
     document.querySelector("#chat-input").addEventListener("keypress", event => {
         if (event.key === "Enter") {
-            sendMessage(event.target.value);
-            displayMessage(event.target.value, nickname);
+            sendMessage(event.target.value, channel);
+            displayMessage(event.target.value, nickname, channel);
             document.querySelector("#chat-input").value = ""; // reset the text in the input
         }
     });
+
+    let channels = Array.from(document.querySelector("#channels").children);
+    for (let i in channels) {
+        channels[i].addEventListener("click", event => {
+            changeChannel(event.target.textContent);
+        });
+    }
 
 }());

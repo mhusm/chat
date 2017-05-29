@@ -24,7 +24,16 @@ io.on("connection", socket => {
 
     socket.on("chat", message => {
         console.log(message);
-        socket.broadcast.emit("chat", message);
+        if (message.to === "General") {
+            socket.broadcast.emit("chat", message);
+        } else {
+            let recipientSocket = getSocket(message.to);
+            if (recipientSocket) {
+                recipientSocket.emit("chat", message);
+            } else {
+                console.log(`Recipient not found ${message.to}`);
+            }
+        }
     });
 
     socket.on("disconnect", reason => {
@@ -38,4 +47,16 @@ let getAllUsers = function getAllUsers() {
     socketIds.forEach(socketId => { users.push(io.sockets.connected[socketId].nickname)});
     return users;
    // let nicknames = Object.values(io.sockets.sockets).map(socket => socket.nickname);
+};
+
+let getSocket = function getSocket(nickname) {
+    let socketIds = Object.keys(io.sockets.connected);
+    let users = [];
+    socketIds.forEach(socketId => {
+        if (io.sockets.connected[socketId].nickname === nickname) {
+            users.push(io.sockets.connected[socketId])
+        }
+    });
+    return  users[0];
+
 };
