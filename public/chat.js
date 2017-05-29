@@ -43,6 +43,19 @@ let displayMessage = function displayMessage(message, user) {
     newNode.innerHTML = `${user}: ${message}`;
     document.querySelector("#chat-window").appendChild(newNode);
 };
+let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
+
+    let options = {
+        body: theBody,
+        icon: theIcon
+    };
+    let n = new Notification(theTitle,options);
+    n.onclick = function () {
+        window.focus();
+        this.close();
+    };
+};
+
 
 (function(){
     enableNotifications();
@@ -57,10 +70,14 @@ let displayMessage = function displayMessage(message, user) {
 
     socket.on("chat", data => {
         console.log(data);
-        displayMessage(data.message, data.from);
         if (document.hidden) {
-            //TODO show notification
+            console.log("hidden");
+            spawnNotification(data.message, 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png', `new message`);
+        } else {
+            console.log("not hidden");
+            console.log(data.message);
         }
+        displayMessage(data.message, data.from);
     });
 
     socket.on("nickname", name => {
