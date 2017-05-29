@@ -42,7 +42,8 @@ let sendMessage = function sendMessage(message, to) {
 
 let displayMessage = function displayMessage(message, user, channel) {
     let newNode = document.createElement('div');
-    newNode.innerHTML = `${user} to ${channel}: ${message}`;
+    let to = channel? ` to ${channel}`: "";
+    newNode.innerHTML = `${user}${to}: ${message}`;
     document.querySelector("#chat-window").appendChild(newNode);
 };
 
