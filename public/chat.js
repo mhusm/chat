@@ -54,6 +54,9 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
         window.focus();
         this.close();
     };
+    n.onerror = function (error) {
+        console.log(error)
+    }
 };
 
 
@@ -72,7 +75,9 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
         console.log(data);
         if (document.hidden) {
             console.log("hidden");
-            spawnNotification(data.message, 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png', `new message`);
+
+            spawnNotification(data.message, 'http://www.free-icons-download.net/images/chat-icon-68862.png', `new message from ${data.from}`);
+   //         spawnNotification(data.message, `http://identicon.org?t=${data.from}&s=256`, `new message from ${data.from}`);
         } else {
             console.log("not hidden");
             console.log(data.message);
