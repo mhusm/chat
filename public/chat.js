@@ -10,18 +10,24 @@ let channelContent = [];
 
 let enableNotifications = function enableNotifications () {
 // Let's check if the browser supports notifications
+    let permissionSpan = document.querySelector("#permissions");
     if (!("Notification" in window)) {
         console.warn("This browser does not support desktop notification");
+        permissionSpan.innerHTML = "This browser does not support desktop notification";
     }
 
 // Let's check whether notification permissions have already been granted
     else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        console.log("Notifications are enabled")
+        console.log("Notifications are enabled");
+        permissionSpan.innerHTML = "Notifications are enabled";
+        //TODO maybe hide the span
     }
 
 // Otherwise, we need to ask the user for permission
     else if (Notification.permission !== "denied") {
+        permissionSpan.innerHTML = "Click here to enable notifications";
+        //TODO
         Notification.requestPermission(function (permission) {
             // If the user accepts, let's create a notification
             if (permission === "granted") {
