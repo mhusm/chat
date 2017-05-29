@@ -4,6 +4,11 @@ li.selected {
 
 #chat-input {
     width: 80%;
+    margin-top: 1em;
+}
+
+ul {
+    max-width: 250px;
 }
 
 #chat-window {
