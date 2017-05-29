@@ -112,10 +112,6 @@ let changeChannel = function changeChannel(newChannel) {
         console.log(socket.id);
     });
 
-    document.querySelector("#nickname").addEventListener("blur", event => {
-        nickname = event.target.textContent;
-    });
-
     socket.on("chat", data => {
         console.log(data);
         if (document.hidden) {
