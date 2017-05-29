@@ -1,3 +1,14 @@
 li.selected {
     background-color: #37c1ff;
 }
+
+#chat-input {
+    width: 80%;
+}
+
+#chat-window {
+    background-color: aliceblue;
+    min-height: 30vh;
+    max-height: 50vh;
+    overflow: auto;
+}
