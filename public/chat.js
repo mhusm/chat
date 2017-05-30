@@ -21,24 +21,37 @@ let enableNotifications = function enableNotifications () {
         // If it's okay let's create a notification
         console.log("Notifications are enabled");
         permissionSpan.innerHTML = "Notifications are enabled";
-        //TODO maybe hide the span
     }
 
 // Otherwise, we need to ask the user for permission
-    else if (Notification.permission !== "denied") {
+    else if (Notification.permission === "default") {
         permissionSpan.innerHTML = "Click here to enable notifications";
-        //TODO
-        Notification.requestPermission(function (permission) {
-            // If the user accepts, let's create a notification
-            if (permission === "granted") {
-                console.log("notifications are enabled")
-            } else {
-                console.log(permission);
-            }
-        });
+        permissionSpan.addEventListener("click", askForPermission);
+        permissionSpan.classList.add("active");
     } else {
+        permissionSpan.innerHTML = "Notifications are disabled";
         console.warn("The user has denied permission for notification");
     }
+};
+
+let askForPermission = function askForPermission () {
+    let permissionSpan = document.querySelector("#permissions");
+    Notification.requestPermission(permission => {
+        // If the user accepts, let's create a notification
+        if (permission === "granted") {
+            console.log("notifications are enabled");
+            permissionSpan.innerHTML = "Notifications are enabled";
+            permissionSpan.classList.remove("active");
+            permissionSpan.removeEventListener("click", askForPermission)
+        } else if (Notification.permission === "denied"){
+            permissionSpan.removeEventListener("click", askForPermission)
+            permissionSpan.innerHTML = "Notifications are disabled";
+            permissionSpan.classList.remove("active");
+            console.log(permission);
+        }
+    });
+
+
 };
 
 

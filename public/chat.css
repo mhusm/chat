@@ -2,6 +2,10 @@ li.selected {
     background-color: #37c1ff;
 }
 
+body {
+    font-family: sans-serif;
+}
+
 #chat-input {
     width: 80%;
     margin-top: 1em;
@@ -16,4 +20,11 @@ ul {
     min-height: 30vh;
     max-height: 50vh;
     overflow: auto;
+}
+span {
+    margin-right: 2em;
+}
+
+span.active {
+    background-color: yellow;
 }
