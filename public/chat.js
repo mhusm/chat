@@ -3,7 +3,6 @@
  */
 'use strict';
 
-//TODO socket.io hinzufügen
 let nickname = "Nickname";
 let channel =  document.querySelector("li.selected").textContent;
 let channelContent = [];
@@ -95,7 +94,7 @@ let setupSocketIO =  function setupSocketIO () {
 
     document.querySelector("#chat-input").addEventListener("keypress", event => {
         if (event.key === "Enter") {
-            handleMessageInput();
+            handleMessageInput(document.querySelector("#chat-input").value);
             document.querySelector("#chat-input").value = ""; // reset the text in the input
         }
     });
