@@ -5,7 +5,6 @@
 let express = require('express');
 let app = express();
 let http = require('http').Server(app);
-let io = require('socket.io')(http);
 let path = require('path');
 let names = require( path.resolve( __dirname, './names.js'));
 
@@ -15,32 +14,6 @@ let port = 8080;
 http.listen(port);
 console.log(`Server auf Port ${port}`);
 
-io.on("connection", socket => {
-    console.log(socket.id);
-    socket.nickname = names.getName();
-
-    socket.emit("nickname", socket.nickname);
-    io.emit("users", getAllUsers());
-
-    socket.on("chat", message => {
-        console.log(message);
-        if (message.to === "General") {
-            socket.broadcast.emit("chat", message);
-        } else {
-            let recipientSocket = getSocket(message.to);
-            if (recipientSocket) {
-                recipientSocket.emit("chat", message);
-            } else {
-                console.log(`Recipient not found ${message.to}`);
-            }
-        }
-    });
-
-    socket.on("disconnect", reason => {
-        console.log(reason);
-        io.emit("users", getAllUsers())
-    });
-});
 
 let getAllUsers = function getAllUsers() {
     let socketIds = Object.keys(io.sockets.connected);

@@ -3,68 +3,25 @@
  */
 'use strict';
 
-let socket = io();
-let nickname = "No name set";
+//TODO socket.io hinzufügen
+let nickname = "Nickname";
 let channel =  document.querySelector("li.selected").textContent;
 let channelContent = [];
 
 let enableNotifications = function enableNotifications () {
-// Let's check if the browser supports notifications
     let permissionSpan = document.querySelector("#permissions");
-    if (!("Notification" in window)) {
-        console.warn("This browser does not support desktop notification");
-        permissionSpan.innerHTML = "This browser does not support desktop notification";
-    }
+    permissionSpan.innerHTML = "TODO hier soll der Notification-Permission-Status angezeigt werden"
 
-// Let's check whether notification permissions have already been granted
-    else if (Notification.permission === "granted") {
-        // If it's okay let's create a notification
-        console.log("Notifications are enabled");
-        permissionSpan.innerHTML = "Notifications sind aktiviert";
-    }
-
-// Otherwise, we need to ask the user for permission
-    else if (Notification.permission === "default") {
-        permissionSpan.innerHTML = "Hier klicken um Notifications zu aktivieren";
-        permissionSpan.addEventListener("click", askForPermission);
-        permissionSpan.classList.add("active");
-    } else {
-        permissionSpan.innerHTML = "Notifications sind deaktiviert";
-        console.warn("The user has denied permission for notification");
-    }
-};
-
-let askForPermission = function askForPermission () {
-    let permissionSpan = document.querySelector("#permissions");
-    Notification.requestPermission(permission => {
-        // If the user accepts, let's create a notification
-        if (permission === "granted") {
-            console.log("notifications are enabled");
-            permissionSpan.innerHTML = "Notifications sind aktiviert";
-            permissionSpan.classList.remove("active");
-            permissionSpan.removeEventListener("click", askForPermission);
-        } else if (Notification.permission === "denied"){
-            permissionSpan.removeEventListener("click", askForPermission);
-            permissionSpan.innerHTML = "Notifications sind deaktiviert";
-            permissionSpan.classList.remove("active");
-            console.log(permission);
-        }
-    });
-
+    //TODO Pruefen, ob der Browser Notifications unterstützt
+    //TODO Falls ja, aktuellen Zustand der Permission für Notifications abfragen
+    //TODO Label für Notification mit aktuellem Zustand aktualisieren
+    //TODO Falls der User noch nicht gefragt wurde, soll eine Klick auf das Label die Abfrage auslösen.
+    //TODO Das Label soll farbig markiert werden: permissionSpan.classList.add("active");
+    //TODO Anschliessend das Label wieder korrekt aktualisieren
 
 };
 
 
-let sendMessage = function sendMessage(message, to) {
-    socket.emit("chat", {from: nickname, message: message, to: to});
-};
-
-let displayMessage = function displayMessage(message, user, channel) {
-    let newNode = document.createElement('div');
-    let to = channel? ` to ${channel}`: "";
-    newNode.innerHTML = `${user}${to}: ${message}`;
-    document.querySelector("#chat-window").appendChild(newNode);
-};
 
 let displayUsers = function displayUsers(users) {
     let userliitems = users.map(user => `<li>${user}</li>`);
@@ -98,21 +55,7 @@ let markChannel = function selectChannel(channel) {
 
 
 let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
-
-    let options = {
-        body: theBody,
-        icon: theIcon
-    };
-    let n = new Notification(theTitle, options);
-
-    n.onclick = function () {
-        window.focus();
-        this.close();
-    };
-
-    n.onerror = function (error) {
-        console.log(error)
-    }
+// TODO eine Notificiation mit den Argumenten absetzen
 };
 
 
@@ -129,40 +72,26 @@ let setNickname = function setNickname(name) {
     document.querySelector("#nickname").textContent = name;
 };
 
+let displayMessage = function displayMessage(message, user, channel) {
+    let newNode = document.createElement('div');
+    let to = channel? ` to ${channel}`: "";
+    newNode.innerHTML = `${user}${to}: ${message}`;
+    document.querySelector("#chat-window").appendChild(newNode);
+};
+
 let handleMessageInput = function handleMessageInput(text) {
-    sendMessage(event.target.value, channel);
-    displayMessage(event.target.value, nickname, channel);
+    // TODO die Nachricht an die anderen Chat-Teilnehmer schicken
+    // TODO die Nachricht anzeigen
+};
+
+let setupSocketIO =  function setupSocketIO () {
+    // TODO Verbindung zum Server aufnehmen
+    // TODO socket.io Events empfangen
+
 };
 
 (function(){
     enableNotifications();
-
-    socket.on("connect", () => {
-        console.log(socket.id);
-    });
-
-    socket.on("chat", data => {
-        console.log(data);
-        if (document.hidden) {
-            console.log("hidden");
-
-            spawnNotification(data.message, 'http://www.free-icons-download.net/images/chat-icon-68862.png', `new message from ${data.from}`);
-   //         spawnNotification(data.message, `http://identicon.org?t=${data.from}&s=256`, `new message from ${data.from}`);
-        } else {
-            console.log("not hidden");
-            console.log(data.message);
-        }
-        displayMessage(data.message, data.from, data.to);
-    });
-
-    socket.on("nickname", name => {
-        setNickname(name);
-    });
-
-    socket.on("users", users => {
-        let  other_users = users.filter(user => user !== nickname);
-        displayUsers(other_users);
-    });
 
     document.querySelector("#chat-input").addEventListener("keypress", event => {
         if (event.key === "Enter") {
@@ -178,4 +107,5 @@ let handleMessageInput = function handleMessageInput(text) {
         });
     }
 
+    setupSocketIO();
 }());
