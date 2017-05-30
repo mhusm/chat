@@ -9,7 +9,7 @@ let channelContent = [];
 
 let enableNotifications = function enableNotifications () {
     let permissionSpan = document.querySelector("#permissions");
-    permissionSpan.innerHTML = "TODO hier soll der Notification-Permission-Status angezeigt werden"
+    permissionSpan.innerHTML = "TODO hier soll der Notification-Permission-Status angezeigt werden";
 
     //TODO Pruefen, ob der Browser Notifications unterstützt
     //TODO Falls ja, aktuellen Zustand der Permission für Notifications abfragen
