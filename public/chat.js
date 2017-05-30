@@ -105,11 +105,6 @@ let spawnNotification = function spawnNotification(theBody,theIcon,theTitle) {
     };
     let n = new Notification(theTitle, options);
 
-    let options = {
-        body: "Mein Body text",
-        icon: "http://example.com/someImage.png"
-    };
-    let n = new Notification("Mein Titel", options);
     n.onclick = function () {
         window.focus();
         this.close();
