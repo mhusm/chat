@@ -37,6 +37,7 @@ io.on("connection", socket => {
     });
 
     socket.on("disconnect", reason => {
+        console.log(reason);
         io.emit("users", getAllUsers())
     });
 });

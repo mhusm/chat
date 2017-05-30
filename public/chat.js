@@ -66,7 +66,7 @@ let displayMessage = function displayMessage(message, user, channel) {
     document.querySelector("#chat-window").appendChild(newNode);
 };
 
-let displayUsers = function displayMessage(users) {
+let displayUsers = function displayUsers(users) {
     let userliitems = users.map(user => `<li>${user}</li>`);
     document.querySelector("#users").innerHTML = userliitems.join("");
     let userelements = Array.from(document.querySelector("#users").children);
@@ -121,9 +121,16 @@ let changeChannel = function changeChannel(newChannel) {
     }
 
 };
-//TODO click here to enable notifications, visualise permission status
 
+let setNickname = function setNickname(name) {
+    nickname = name;
+    document.querySelector("#nickname").textContent = name;
+};
 
+let handleMessageInput = function handleMessageInput(text) {
+    sendMessage(event.target.value, channel);
+    displayMessage(event.target.value, nickname, channel);
+};
 
 (function(){
     enableNotifications();
@@ -147,9 +154,7 @@ let changeChannel = function changeChannel(newChannel) {
     });
 
     socket.on("nickname", name => {
-        nickname = name;
-        document.querySelector("#nickname").textContent = name;
-
+        setNickname(name);
     });
 
     socket.on("users", users => {
@@ -159,8 +164,7 @@ let changeChannel = function changeChannel(newChannel) {
 
     document.querySelector("#chat-input").addEventListener("keypress", event => {
         if (event.key === "Enter") {
-            sendMessage(event.target.value, channel);
-            displayMessage(event.target.value, nickname, channel);
+            handleMessageInput();
             document.querySelector("#chat-input").value = ""; // reset the text in the input
         }
     });
