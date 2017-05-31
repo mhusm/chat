@@ -172,7 +172,7 @@ let setupSocketIO =  function setupSocketIO () {
 
     document.querySelector("#chat-input").addEventListener("keypress", event => {
         if (event.key === "Enter") {
-            handleMessageInput(event.target.textContent);
+            handleMessageInput(event.target.value);
             document.querySelector("#chat-input").value = ""; // reset the text in the input
         }
     });
