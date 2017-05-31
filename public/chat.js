@@ -3,7 +3,6 @@
  */
 'use strict';
 
-let socket = io();
 let nickname = "No name set";
 let channel =  document.querySelector("li.selected").textContent;
 let channelContent = [];
@@ -130,12 +129,12 @@ let setNickname = function setNickname(name) {
 };
 
 let handleMessageInput = function handleMessageInput(text) {
-    sendMessage(event.target.value, channel);
-    displayMessage(event.target.value, nickname, channel);
+    sendMessage(text, channel);
+    displayMessage(text, nickname, channel);
 };
 
-(function(){
-    enableNotifications();
+let setupSocketIO =  function setupSocketIO () {
+    window.socket = io();
 
     socket.on("connect", () => {
         console.log(socket.id);
@@ -146,8 +145,10 @@ let handleMessageInput = function handleMessageInput(text) {
         if (document.hidden) {
             console.log("hidden");
 
-            spawnNotification(data.message, 'http://www.free-icons-download.net/images/chat-icon-68862.png', `new message from ${data.from}`);
-   //         spawnNotification(data.message, `http://identicon.org?t=${data.from}&s=256`, `new message from ${data.from}`);
+            spawnNotification(data.message,
+                'http://www.free-icons-download.net/images/chat-icon-68862.png',
+                `new message from ${data.from}`);
+            //         spawnNotification(data.message, `http://identicon.org?t=${data.from}&s=256`, `new message from ${data.from}`);
         } else {
             console.log("not hidden");
             console.log(data.message);
@@ -164,9 +165,14 @@ let handleMessageInput = function handleMessageInput(text) {
         displayUsers(other_users);
     });
 
+};
+
+(function(){
+    enableNotifications();
+
     document.querySelector("#chat-input").addEventListener("keypress", event => {
         if (event.key === "Enter") {
-            handleMessageInput();
+            handleMessageInput(event.target.textContent);
             document.querySelector("#chat-input").value = ""; // reset the text in the input
         }
     });
@@ -178,4 +184,5 @@ let handleMessageInput = function handleMessageInput(text) {
         });
     }
 
+    setupSocketIO();
 }());
